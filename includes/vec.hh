@@ -84,4 +84,4 @@ struct Vec {
     }
 };
 
-using vec3f = Vec<float>;
+using vec3f = Vec<double>;
