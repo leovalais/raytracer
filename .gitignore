@@ -1,3 +1,12 @@
+# Custom
+build/
+.vscode/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+release/
+debug/
+
 # Prerequisites
 *.d
 
