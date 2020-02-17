@@ -16,6 +16,11 @@ Scene::Scene(const std::string& filename) : filename_(filename) {
     process_node(scene->mRootNode, scene);
 }
 
+Scene::image Scene::render() const {
+    auto img = image{FreeImage_Allocate(640, 480, 24)};
+    return img;
+};
+
 void Scene::process_node(const aiNode* node, const aiScene* scene) {
     for (unsigned i = 0; i < node->mNumMeshes; ++i) {
         const auto mesh = scene->mMeshes[node->mMeshes[i]];

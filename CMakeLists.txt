@@ -14,15 +14,9 @@ set(ASSIMP_BUILD_TESTS OFF)
 add_subdirectory(assimp)
 include_directories("${PROJECT_SOURCE_DIR}/assimp/include")
 
-include_directories(includes/ assimp/include/)
+find_library(FI_LIB freeimage)
+include_directories(includes/ assimp/include/ /usr/local/include)
 file(GLOB SRC src/*.cc)
-# include_directories(
-#     ${PROJECT_SOURCE_DIR}/includes/
-#     ${PROJECT_SOURCE_DIR}/src/
-# )
-add_executable(raytracer ${SRC})
-target_link_libraries(raytracer assimp)
 
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
+add_executable(raytracer ${SRC})
+target_link_libraries(raytracer assimp "${FI_LIB}")

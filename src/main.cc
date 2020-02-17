@@ -17,7 +17,15 @@ int main(int argc, char** argv) {
         return 1;
     }
     const auto scene_file = std::string{argv[1]};
+    const auto out_file   = "out.png";
     std::cout << "Loading scene: " << scene_file << std::endl;
     auto scene = Scene{scene_file};
     std::cout << "Rendering scene..." << std::endl;
+    const auto image = scene.render();
+    std::cout << "Saving it into '" << out_file << "'..." << std::endl;
+    if (not FreeImage_Save(FIF_PNG, image.get(), out_file)) {
+        std::cerr << "could not save image '" << out_file << "'" << std::endl;
+        return 1;
+    }
+    return 0;
 }
