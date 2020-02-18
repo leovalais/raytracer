@@ -16,8 +16,11 @@ Scene::Scene(const std::string& filename) : filename_(filename) {
     process_node(scene->mRootNode, scene);
 }
 
-Scene::image Scene::render() const {
-    auto img = image{FreeImage_Allocate(640, 480, 24)};
+Image Scene::render() const {
+    auto img = Image{640, 480};
+    for (unsigned x = 0; x < 640; ++x)
+        for (unsigned y = 0; y < 480; ++y)
+            img.set_pixel({x, y}, RGB{0.f, 0.f, 1.f});
     return img;
 };
 

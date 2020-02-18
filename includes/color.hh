@@ -30,7 +30,7 @@ struct RGB_trait {
 using RGB = Color<RGB_trait>;
 
 struct ByteRGB_trait {
-    using type                = unsigned;
+    using type                = unsigned char; // same as FreeImage's BYTE typedef
     static constexpr type max = 255;
 };
 using ByteRGB = Color<ByteRGB_trait>;

@@ -23,9 +23,6 @@ int main(int argc, char** argv) {
     std::cout << "Rendering scene..." << std::endl;
     const auto image = scene.render();
     std::cout << "Saving it into '" << out_file << "'..." << std::endl;
-    if (not FreeImage_Save(FIF_PNG, image.get(), out_file)) {
-        std::cerr << "could not save image '" << out_file << "'" << std::endl;
-        return 1;
-    }
+    image.save(out_file);
     return 0;
 }

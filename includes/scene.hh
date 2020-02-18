@@ -8,16 +8,12 @@
 #include <assimp/postprocess.h>
 #include <FreeImage.h>
 #include "triangle.hh"
-
-struct FIBITMAPDeleter {
-    void operator()(FIBITMAP* bitmap) { FreeImage_Unload(bitmap); }
-};
+#include "image.hh"
 
 class Scene {
 public:
-    using image = std::unique_ptr<FIBITMAP, FIBITMAPDeleter>;
     Scene(const std::string& filename);
-    image render() const;
+    Image render() const;
 
 private:
     void process_node(const aiNode* node, const aiScene* scene);
