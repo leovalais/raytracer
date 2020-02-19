@@ -5,10 +5,16 @@
 #include <stdexcept>
 #include "ray.hh"
 
+Scene::Scene() : filename{}, triangles{}, camera{}, image_width{640}, image_height{480} {}
+
 Scene::Scene(const std::string& filename_) : filename(filename_) {
+    load();
+}
+
+void Scene::load(const std::filesystem::path& directory) {
     Assimp::Importer import;
-    const auto scene
-        = import.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const auto scene = import.ReadFile(directory / filename,
+                                       aiProcess_Triangulate | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         auto msg = std::ostringstream{};
         msg << "[ASSIMP ERROR](" << filename << ") " << import.GetErrorString();
@@ -17,12 +23,15 @@ Scene::Scene(const std::string& filename_) : filename(filename_) {
     process_node(scene->mRootNode, scene);
 }
 
-#include "printers.hh"
+Image Scene::render() const {
+    return render(camera);
+}
+
 Image Scene::render(const Camera& camera) const {
-    auto img                       = Image{camera.image_width, camera.image_height};
+    auto img                       = Image{image_width, image_height};
     const auto camera_plane_size   = std::tan(camera.fov / 2);
-    const int iw2                  = camera.image_width / 2;
-    const int ih2                  = camera.image_height / 2;
+    const int iw2                  = image_width / 2;
+    const int ih2                  = image_height / 2;
     const double cam_plane_x_units = camera_plane_size / iw2;
     const double cam_plane_y_units = camera_plane_size / ih2;
     for (int y = -ih2; y < ih2; ++y)

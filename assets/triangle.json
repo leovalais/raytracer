@@ -1,15 +1,18 @@
 {
-    "position": [
-        0,
-        0,
-        -10
-    ],
-    "orientation": [
-        0,
-        0,
-        1
-    ],
-    "fov": 0.7853981634,
+    "scene": "triangle.obj",
+    "camera": {
+        "position": [
+            0,
+            0,
+            -10
+        ],
+        "orientation": [
+            0,
+            0,
+            1
+        ],
+        "fov": 0.7853981634
+    },
     "width": 640,
     "height": 480
 }

@@ -1,4 +1,4 @@
-#include "camera.hh"
+#include "json-serializers.hh"
 
 void from_json(const nlohmann::json& j, vec3f& vec) {
     j[0].get_to(vec.x);
@@ -10,6 +10,11 @@ void from_json(const nlohmann::json& j, Camera& cam) {
     j.at("position").get_to(cam.position);
     j.at("orientation").get_to(cam.orientation);
     j.at("fov").get_to(cam.fov);
-    j.at("width").get_to(cam.image_width);
-    j.at("height").get_to(cam.image_height);
+}
+
+void from_json(const nlohmann::json& j, Scene& scene) {
+    j.at("camera").get_to(scene.camera);
+    j.at("width").get_to(scene.image_width);
+    j.at("height").get_to(scene.image_height);
+    j.at("scene").get_to(scene.filename);
 }
