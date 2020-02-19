@@ -4,7 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 
-Scene::Scene(const std::string& filename) : filename_(filename) {
+Scene::Scene(const std::string& filename_) : filename(filename_) {
     Assimp::Importer import;
     const auto scene
         = import.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -16,10 +16,10 @@ Scene::Scene(const std::string& filename) : filename_(filename) {
     process_node(scene->mRootNode, scene);
 }
 
-Image Scene::render() const {
-    auto img = Image{640, 480};
-    for (unsigned x = 0; x < 640; ++x)
-        for (unsigned y = 0; y < 480; ++y)
+Image Scene::render(const Camera& camera) const {
+    auto img = Image{camera.image_width, camera.image_height};
+    for (unsigned x = 0; x < camera.image_width; ++x)
+        for (unsigned y = 0; y < camera.image_height; ++y)
             img.set_pixel({x, y}, RGB{0.f, 0.f, 1.f});
     return img;
 };
@@ -39,9 +39,9 @@ void Scene::process_node(const aiNode* node, const aiScene* scene) {
             for (unsigned k = 0; k < face.mNumIndices; ++k)
                 vertex_indices.push_back(face.mIndices[k]);
             assert(vertex_indices.size() == 3);
-            triangles_.push_back(triangle{vertices[vertex_indices[0]],
-                                          vertices[vertex_indices[1]],
-                                          vertices[vertex_indices[2]]});
+            triangles.push_back(triangle{vertices[vertex_indices[0]],
+                                         vertices[vertex_indices[1]],
+                                         vertices[vertex_indices[2]]});
         }
     }
     for (unsigned i = 0; i < node->mNumChildren; ++i)

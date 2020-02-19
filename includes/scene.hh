@@ -10,16 +10,18 @@
 #include <json.hpp>
 #include "triangle.hh"
 #include "image.hh"
+#include "camera.hh"
 
 class Scene {
 public:
-    Scene(const std::string& filename);
-    Image render() const;
+    Scene(const std::string& filename_);
+    Image render(const Camera& camera) const;
+    const std::vector<triangle>& get_triangles() const { return triangles; }
 
 private:
     void process_node(const aiNode* node, const aiScene* scene);
 
 private:
-    std::string filename_;
-    std::vector<triangle> triangles_;
+    std::string filename;
+    std::vector<triangle> triangles;
 };

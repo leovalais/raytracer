@@ -12,6 +12,9 @@ struct FIBITMAPDeleter {
     void operator()(FIBITMAP* bitmap) { FreeImage_Unload(bitmap); }
 };
 
+/**
+ * Wrapper around FreeImage's FIBITMAP-related functions.
+ */
 class Image {
 public:
     Image(unsigned width, unsigned height);

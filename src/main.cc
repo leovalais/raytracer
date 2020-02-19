@@ -20,8 +20,11 @@ int main(int argc, char** argv) {
     const auto out_file   = "out.png";
     std::cout << "Loading scene: " << scene_file << std::endl;
     auto scene = Scene{scene_file};
+    std::cout << "... contains " << scene.get_triangles().size() << " triangles"
+              << std::endl;
     std::cout << "Rendering scene..." << std::endl;
-    const auto image = scene.render();
+    const auto camera = Camera{{0, 0, 0}, {0, 0, 0}, 45.0f, 640, 480};
+    const auto image  = scene.render(camera);
     std::cout << "Saving it into '" << out_file << "'..." << std::endl;
     image.save(out_file);
     return 0;
