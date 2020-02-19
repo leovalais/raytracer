@@ -7,6 +7,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <FreeImage.h>
+#include <json.hpp>
 #include "triangle.hh"
 #include "image.hh"
 

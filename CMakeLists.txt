@@ -15,7 +15,12 @@ add_subdirectory(assimp)
 include_directories("${PROJECT_SOURCE_DIR}/assimp/include")
 
 find_library(FI_LIB freeimage)
-include_directories(includes/ assimp/include/ /usr/local/include)
+include_directories(
+    includes/
+    assimp/include/
+    json/single_include/nlohmann/
+    /usr/local/include/
+)
 file(GLOB SRC src/*.cc)
 
 add_executable(raytracer ${SRC})
