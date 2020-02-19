@@ -6,9 +6,9 @@
 
 template <typename T>
 struct Vec {
-    const T x, y, z;
+    T x, y, z;
 
-    Vec() = delete;
+    Vec() : x(0), y(0), z(0) {}
     Vec(T x_, T y_, T z_) : x(x_), y(y_), z(z_) {}
     Vec(T value) : Vec(value, value, value) {}
     Vec(const Vec&)  = default;
