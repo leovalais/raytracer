@@ -3,6 +3,7 @@
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
+#include "ray.hh"
 
 Scene::Scene(const std::string& filename_) : filename(filename_) {
     Assimp::Importer import;
@@ -16,13 +17,28 @@ Scene::Scene(const std::string& filename_) : filename(filename_) {
     process_node(scene->mRootNode, scene);
 }
 
+#include "printers.hh"
 Image Scene::render(const Camera& camera) const {
-    auto img = Image{camera.image_width, camera.image_height};
-    for (unsigned x = 0; x < camera.image_width; ++x)
-        for (unsigned y = 0; y < camera.image_height; ++y)
-            img.set_pixel({x, y}, RGB{0.f, 0.f, 1.f});
+    auto img                       = Image{camera.image_width, camera.image_height};
+    const auto camera_plane_size   = std::tan(camera.fov / 2);
+    const int iw2                  = camera.image_width / 2;
+    const int ih2                  = camera.image_height / 2;
+    const double cam_plane_x_units = camera_plane_size / iw2;
+    const double cam_plane_y_units = camera_plane_size / ih2;
+    for (int y = -ih2; y < ih2; ++y)
+        for (int x = -iw2; x < iw2; ++x) {
+            const auto xy_on_camera_plane = vec3f{
+                x * cam_plane_x_units, y * cam_plane_y_units, camera.position.z + 1};
+            const auto dir = (xy_on_camera_plane - camera.position).normalized();
+            const auto ray = Ray{camera.position, dir};
+            for (const auto& triangle : triangles)
+                if (auto pt = ray.intersection(triangle)) {
+                    img.set_pixel({x + iw2, y + ih2}, RGB{1, 1, 1});
+                    break;
+                }
+        }
     return img;
-};
+}
 
 void Scene::process_node(const aiNode* node, const aiScene* scene) {
     for (unsigned i = 0; i < node->mNumMeshes; ++i) {

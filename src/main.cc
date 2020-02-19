@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include "vec.hh"
 #include "printers.hh"
 #include "color.hh"
@@ -23,7 +25,7 @@ int main(int argc, char** argv) {
     std::cout << "... contains " << scene.get_triangles().size() << " triangles"
               << std::endl;
     std::cout << "Rendering scene..." << std::endl;
-    const auto camera = Camera{{0, 0, 0}, {0, 0, 0}, 45.0f, 640, 480};
+    const auto camera = Camera{{0, 0, -10}, {0, 0, 1}, M_PI / 4, 640, 480};
     const auto image  = scene.render(camera);
     std::cout << "Saving it into '" << out_file << "'..." << std::endl;
     image.save(out_file);

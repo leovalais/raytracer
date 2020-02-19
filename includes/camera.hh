@@ -5,7 +5,7 @@
 
 struct Camera {
     vec3f position;
-    vec3f rotation;
+    vec3f direction;
     double fov;
     unsigned image_width, image_height;
 

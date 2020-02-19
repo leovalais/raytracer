@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <compare>
+#include <cmath>
 
 template <typename T>
 struct Vec {
@@ -52,6 +53,10 @@ struct Vec {
         const auto [xx, yy, zz] = other;
         return x * xx + y * yy + z * zz;
     }
+
+    T norm() const { return sqrt(x * x + y * y + z * z); }
+
+    Vec normalized() const { return *this / norm(); }
 
     template <unsigned N>
     T get() const {
