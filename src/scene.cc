@@ -23,11 +23,11 @@ Image Scene::render(const Camera& camera) const {
     const int iw2                = image_width / 2;
     const int ih2                = image_height / 2;
     const double aspect_ratio    = static_cast<double>(image_width) / image_height;
-    const double focal_length    = 1.0;
     const auto camera_fov        = std::tan(camera.fov / 2);
     const double viewport_width  = camera_fov;
     const double viewport_height = viewport_width / aspect_ratio;
-    const auto viewport_origin   = camera.position - camera.orientation * focal_length;
+    const auto viewport_origin
+        = camera.position - camera.orientation * camera.focal_length;
     for (int y = -ih2; y < ih2; ++y) {
         const double vp_y = static_cast<double>(y) / (image_height - 1);
         for (int x = -iw2; x < iw2; ++x) {
@@ -63,9 +63,9 @@ std::optional<RGB> Scene::cast(const Ray& ray) const {
                                       if (const auto i = ray.intersection(t)) {
                                           const auto d = (*i - ray.origin).norm();
                                           if (d < p.second) {
-                                              if (m.material) {
+                                              if (m.material)
                                                   p = {m.material->diffuse, d};
-                                              } else
+                                              else
                                                   p = {std::nullopt, d};
                                           }
                                       }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <cmath>
 #include "printers.hh"
 
 template <class F>
@@ -22,4 +23,9 @@ y_combinator(F) -> y_combinator<F>;
 template <class F>
 y_combinator<std::decay_t<F>> make_y_combinator(F&& f) {
     return {std::forward<F>(f)};
+}
+
+template <typename T>
+inline constexpr T deg_to_rad(const T deg) {
+    return deg * M_PI / 180.0;
 }
