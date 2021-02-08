@@ -1,9 +1,9 @@
 {
-    "scene": "triangle.obj",
+    "scene": "cornell-box.obj",
     "camera": {
         "position": [
             0,
-            0,
+            2.5,
             10
         ],
         "orientation": [
@@ -11,7 +11,8 @@
             0,
             -1
         ],
-        "fov": 0.7853981634
+        "fov": 1.91986,
+        "info": "110 deg, fov binoculaire humain"
     },
     "width": 640,
     "height": 480

@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <filesystem>
+#include <optional>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -12,6 +13,7 @@
 #include "triangle.hh"
 #include "image.hh"
 #include "camera.hh"
+#include "ray.hh"
 
 class Scene {
 public:
@@ -20,15 +22,19 @@ public:
     void load(const std::filesystem::path& directory = "");
     Image render() const;
     Image render(const Camera& camera) const;
-    const std::vector<triangle>& get_triangles() const { return triangles; }
+    const Node& get_root_node() const { return root_node; }
+
+    std::optional<RGB> cast(const Ray& ray) const;
 
 private:
-    void process_node(const aiNode* node, const aiScene* scene);
+    Node load_node(const aiNode* node,
+                   const aiScene* scene,
+                   const std::vector<std::shared_ptr<Material>>& materials);
     friend void from_json(const nlohmann::json& j, Scene& scene);
 
 private:
     std::filesystem::path filename;
-    std::vector<triangle> triangles;
+    Node root_node;
     Camera camera;
     unsigned image_width, image_height;
 };

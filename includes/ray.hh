@@ -3,14 +3,14 @@
 #include <optional>
 #include "color.hh"
 #include "vec.hh"
+#include "triangle.hh"
 
-template <unsigned N = 5>
 struct Ray {
     vec3f origin;
     vec3f direction;
 
     Ray(const vec3f& origin_, const vec3f& direction_)
-        : origin(origin_), direction(direction_) {}
+        : origin(origin_), direction(direction_) { }
 
     /**
      * Returns the point in the given triangle where this ray intersects it, if any.
@@ -19,5 +19,3 @@ struct Ray {
      */
     std::optional<vec3f> intersection(const triangle&) const;
 };
-
-#include "ray.hxx"

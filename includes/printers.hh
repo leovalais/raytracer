@@ -11,5 +11,5 @@ std::ostream& operator<<(std::ostream& out, const Vec<T>& vec) {
 
 template <typename T>
 std::ostream& operator<<(std::ostream& out, const Color<T>& col) {
-    return out << "rgb(" << col.r << ", " << col.g << ", " << col.b << ')';
+    return out << "rgb(" << +col.r << ", " << +col.g << ", " << +col.b << ')';
 }
