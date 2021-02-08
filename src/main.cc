@@ -51,7 +51,9 @@ int main(int argc, char** argv) {
           });
     std::cout << "... contains " << count_triangles(root) << " triangles" << std::endl;
     std::cout << "Rendering scene..." << std::endl;
-    const auto image = scene.render();
+    auto image = scene.render();
+    std::cout << "Applying gamma correction..." << std::endl;
+    // image.gamma_correct();
     std::cout << "Saving it into '" << out_file << "'..." << std::endl;
     image.save(out_file);
     return 0;

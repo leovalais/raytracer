@@ -29,3 +29,12 @@ template <typename T>
 inline constexpr T deg_to_rad(const T deg) {
     return deg * M_PI / 180.0;
 }
+
+template <typename T>
+inline constexpr T clamp(const T value, const T min, const T max) {
+    if (value < min)
+        return min;
+    if (value > max)
+        return max;
+    return value;
+}

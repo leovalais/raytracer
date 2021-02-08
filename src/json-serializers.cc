@@ -10,7 +10,8 @@ void from_json(const nlohmann::json& j, Camera& cam) {
     j.at("position").get_to(cam.position);
     j.at("orientation").get_to(cam.orientation);
     j.at("fov").get_to(cam.fov);
-    j.at("focal_length").get_to(cam.focal_length);
+    if (j.contains("focal_length"))
+        j.at("focal_length").get_to(cam.focal_length);
 }
 
 void from_json(const nlohmann::json& j, Scene& scene) {

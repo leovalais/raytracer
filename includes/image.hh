@@ -18,10 +18,14 @@ struct FIBITMAPDeleter {
 class Image {
 public:
     Image(unsigned width, unsigned height);
+    void gamma_correct();
     void set_pixel(const point_t& coords, const ByteRGB& pixel) const;
 
     ByteRGB operator[](const point_t& coords) const;
     void save(const std::string& filename) const;
+
+    inline unsigned width() const { return FreeImage_GetWidth(bitmap.get()); }
+    inline unsigned height() const { return FreeImage_GetHeight(bitmap.get()); }
 
 private:
     std::unique_ptr<FIBITMAP, FIBITMAPDeleter> bitmap;
