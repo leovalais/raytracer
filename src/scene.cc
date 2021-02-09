@@ -36,7 +36,7 @@ Image Scene::render(const Camera& camera) const {
             const auto vp_xy  = vec3f{vp_x * viewport_width, vp_y * viewport_height, 0};
             const auto dir = (camera.position - (viewport_origin + vp_xy)).normalized();
             const auto ray = Ray{camera.position, dir};
-            if (const auto hit = cast<12>(ray))
+            if (const auto hit = cast<3>(ray))
                 img.set_pixel({image_width - (x + iw2), image_height - (y + ih2)},
                               hit->color);
         }

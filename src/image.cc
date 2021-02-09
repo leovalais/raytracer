@@ -10,11 +10,10 @@ Image::Image(unsigned width, unsigned height)
  * See https://stackoverflow.com/a/61138576
  */
 static inline RGB_trait::type linear_rgb_to_sRGB(const RGB_trait::type value) {
-    // if (value <= 0.0031308)
-    //     return value * 12.92;
-    // else
-    //     return std::pow(value, 1.0 / 2.4) * 1.055 - 0.055;
-    return std::pow(value, 1.0 / 2.2);
+    if (value <= 0.0031308)
+        return value * 12.92;
+    else
+        return std::pow(value, 1.0 / 2.4) * 1.055 - 0.055;
 }
 
 void Image::gamma_correct() {
