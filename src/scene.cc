@@ -59,7 +59,7 @@ std::optional<hit> Scene::cast(const Ray& ray) const {
         bounce_dir = -1.0 * bounce_dir;
     const auto bounce = Ray{pt, bounce_dir};
     if (auto bounce_hit = cast<N - 1>(bounce)) {
-        bounce_hit->color = (hit->material->diffuse + bounce_hit->material->diffuse) / 4;
+        bounce_hit->color = (hit->material->diffuse + bounce_hit->color) / 4;
         return bounce_hit;
     } else
         return hit;
