@@ -87,11 +87,11 @@ struct Vec {
             throw std::out_of_range("out of range index in Vec::operator[]");
         }
     }
-
-    // static const Vec x_unit{1, 0, 0};
-    // static const Vec y_unit{1, 0, 0};
-    // static const Vec z_unit{1, 0, 0};
-    // static const Vec unit{1, 1, 1};
 };
+
+template <typename T>
+Vec<T> operator*(const T n, const Vec<T>& v) {
+    return v * n;
+}
 
 using vec3f = Vec<double>;

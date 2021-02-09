@@ -35,46 +35,42 @@ Image Scene::render(const Camera& camera) const {
             const auto vp_xy  = vec3f{vp_x * viewport_width, vp_y * viewport_height, 0};
             const auto dir = (camera.position - (viewport_origin + vp_xy)).normalized();
             const auto ray = Ray{camera.position, dir};
-            if (const auto& color = cast(ray))
-                img.set_pixel({x + iw2, image_height - (y + ih2)}, *color);
+            if (const auto& hit = cast(ray))
+                if (hit->material)
+                    img.set_pixel({x + iw2, image_height - (y + ih2)},
+                                  hit->material->diffuse);
         }
     }
     return img;
 }
 
-std::optional<RGB> Scene::cast(const Ray& ray) const {
+std::optional<hit> Scene::cast(const Ray& ray) const {
     static const auto find_intersection = make_y_combinator(
-        [&ray](const auto& recurse,
-               const Node& node) -> std::pair<std::optional<RGB>, double> {
-            auto p = std::make_pair<std::optional<RGB>, double>(
-                std::nullopt, std::numeric_limits<double>::infinity());
-            std::for_each(node.children.begin(),
-                          node.children.end(),
-                          [&p, &recurse](const auto& n) {
-                              const auto [c, d] = recurse(n);
-                              if (d < p.second)
-                                  p = {c, d};
-                          });
-            std::for_each(
-                node.meshes.begin(), node.meshes.end(), [&p, &ray](const Mesh& m) {
-                    std::for_each(m.triangles.begin(),
-                                  m.triangles.end(),
-                                  [&p, &ray, &m](const auto& t) {
-                                      if (const auto i = ray.intersection(t)) {
-                                          const auto d = (*i - ray.origin).norm();
-                                          if (d < p.second) {
-                                              if (m.material)
-                                                  p = {m.material->diffuse, d};
-                                              else
-                                                  p = {std::nullopt, d};
-                                          }
-                                      }
-                                  });
+        [&ray](const auto& recurse, const Node& node) -> hit {
+            auto h = hit{std::numeric_limits<double>::infinity(), ray};
+            std::for_each(node.meshes.begin(), node.meshes.end(), [&](const Mesh& m) {
+                std::for_each(m.triangles.begin(), m.triangles.end(), [&](const auto& t) {
+                    if (const auto i = ray.intersection(t)) {
+                        const auto d = (*i - ray.origin).norm();
+                        if (d < h.distance) {
+                            h.distance = d;
+                            h.material = m.material;
+                            h.triangle = t;
+                            h.mesh     = m;
+                            h.node     = node;
+                        }
+                    }
                 });
-            return p;
+            });
+            std::for_each(node.children.begin(), node.children.end(), [&](const auto& n) {
+                hit hh = recurse(n);
+                if (hh.distance < h.distance)
+                    h = hh;
+            });
+            return h;
         });
-    const auto [color, _] = find_intersection(root_node);
-    return color;
+    const auto hit = find_intersection(root_node);
+    return hit;
 }
 
 Node Scene::load_node(const aiNode* ainode,
@@ -95,7 +91,7 @@ Node Scene::load_node(const aiNode* ainode,
         if (aimesh->mNormals)
             for (unsigned j = 0; j < aimesh->mNumVertices; j++) {
                 const auto& v = aimesh->mNormals[j];
-                normals.push_back({v.x, v.y, v.z});
+                normals.push_back(vec3f{v.x, v.y, v.z}.normalized());
             }
 
         for (unsigned j = 0; j < aimesh->mNumFaces; ++j) {

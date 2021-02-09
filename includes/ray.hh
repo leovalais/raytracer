@@ -7,8 +7,9 @@
 
 struct Ray {
     vec3f origin;
-    vec3f direction;
+    vec3f direction{0, 0, 1};
 
+    Ray() = default;
     Ray(const vec3f& origin_, const vec3f& direction_)
         : origin(origin_), direction(direction_) { }
 

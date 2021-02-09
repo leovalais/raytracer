@@ -14,6 +14,19 @@
 #include "image.hh"
 #include "camera.hh"
 #include "ray.hh"
+#include "material.hh"
+
+struct hit {
+    double distance;
+    Ray ray;
+    std::shared_ptr<Material> material;
+    triangle triangle;
+    Mesh mesh;
+    Node node;
+
+    hit() = default;
+    hit(double d, const Ray& r) : distance{d}, ray{r} { }
+};
 
 class Scene {
 public:
@@ -24,7 +37,7 @@ public:
     Image render(const Camera& camera) const;
     const Node& get_root_node() const { return root_node; }
 
-    std::optional<RGB> cast(const Ray& ray) const;
+    std::optional<hit> cast(const Ray& ray) const;
 
 private:
     Node load_node(const aiNode* node,
