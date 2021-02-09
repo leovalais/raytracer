@@ -19,6 +19,7 @@
 struct hit {
     double distance;
     Ray ray;
+    RGB color;
     std::shared_ptr<Material> material;
     triangle triangle;
     Mesh mesh;
@@ -26,6 +27,8 @@ struct hit {
 
     hit() = default;
     hit(double d, const Ray& r) : distance{d}, ray{r} { }
+
+    inline vec3f point() const { return ray.origin + distance * ray.direction; }
 };
 
 class Scene {
@@ -37,6 +40,7 @@ public:
     Image render(const Camera& camera) const;
     const Node& get_root_node() const { return root_node; }
 
+    template <unsigned N>
     std::optional<hit> cast(const Ray& ray) const;
 
 private:

@@ -1,7 +1,7 @@
 #include "ray.hh"
+#include "utils.hh" // epsilon
 
 std::optional<vec3f> Ray::intersection(const triangle& triangle) const {
-    static constexpr auto epsilon           = 0.0000001;
     const auto& [vertex0, vertex1, vertex2] = triangle;
     const auto edge1                        = vertex1 - vertex0;
     const auto edge2                        = vertex2 - vertex0;

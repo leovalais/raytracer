@@ -37,6 +37,16 @@ struct triangle {
     auto&& get() && {
         return std::move(vertices[N]);
     }
+
+    vec3f normal_at(const vec3f& point) const {
+        const auto& [v1, v2, v3] = vertices;
+        const auto d1            = (v1 - point).norm();
+        const auto d2            = (v2 - point).norm();
+        const auto d3            = (v3 - point).norm();
+        const auto& [n1, n2, n3] = normals;
+        const auto n             = (d1 * n1 + d2 * n2 + d3 * n3).normalized();
+        return n;
+    }
 };
 
 // triangle structured bindings with triangle::get<N>
@@ -56,6 +66,10 @@ struct Mesh {
 };
 
 struct Node {
+    std::string name;
     std::vector<Mesh> meshes;
     std::vector<Node> children;
+
+    Node() = default;
+    Node(const std::string& name_) : name{name_} {}
 };

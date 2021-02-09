@@ -37,9 +37,37 @@ struct Color {
               Trait::max * static_cast<double>(other.b / OtherTrait::max))} { }
 };
 
+template <typename T>
+Color<T> operator+(const Color<T>& a, const Color<T>& b) {
+    return {a.r + b.r, a.g + b.g, a.b + b.b};
+}
+
+template <typename T>
+Color<T> operator-(const Color<T>& a, const Color<T>& b) {
+    return {a.r - b.r, a.g - b.g, a.b - b.b};
+}
+
+template <typename T>
+Color<T> operator*(const typename T::type f, const Color<T>& c) {
+    return {f * c.r, f * c.g, f * c.b};
+}
+template <typename T>
+Color<T> operator*(const Color<T>& c, const typename T::type f) {
+    return f * c;
+}
+template <typename T>
+Color<T> operator*(const Color<T>& a, const Color<T>& b) {
+    return {a.r * b.r, a.g * b.g, a.b * b.b};
+}
+
+template <typename T>
+Color<T> operator/(const Color<T>& c, const typename T::type f) {
+    return {c.r / f, c.g / f, c.b / f};
+}
+
 struct RGB_trait {
-    using type                = float;
-    static constexpr type max = 1.0f;
+    using type                = double;
+    static constexpr type max = 1.0;
 };
 using RGB = Color<RGB_trait>;
 

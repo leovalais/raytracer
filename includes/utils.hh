@@ -4,6 +4,8 @@
 #include <cmath>
 #include "printers.hh"
 
+constexpr double epsilon = 0.0000001;
+
 template <class F>
 struct y_combinator {
     F f; // the lambda will be stored here

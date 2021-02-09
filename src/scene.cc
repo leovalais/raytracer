@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <utility>
 #include <limits>
+#include <random>
 #include "utils.hh"
 
 Scene::Scene()
@@ -35,24 +36,45 @@ Image Scene::render(const Camera& camera) const {
             const auto vp_xy  = vec3f{vp_x * viewport_width, vp_y * viewport_height, 0};
             const auto dir = (camera.position - (viewport_origin + vp_xy)).normalized();
             const auto ray = Ray{camera.position, dir};
-            if (const auto& hit = cast(ray))
-                if (hit->material)
-                    img.set_pixel({x + iw2, image_height - (y + ih2)},
-                                  hit->material->diffuse);
+            if (const auto hit = cast<12>(ray))
+                img.set_pixel({image_width - (x + iw2), image_height - (y + ih2)},
+                              hit->color);
         }
     }
     return img;
 }
 
+template <unsigned N>
 std::optional<hit> Scene::cast(const Ray& ray) const {
-    static const auto find_intersection = make_y_combinator(
+    // static auto rd          = std::random_device{};
+    static auto gen         = std::mt19937{42};
+    static auto random_unit = std::uniform_real_distribution<double>(0.0, 1.0);
+    const auto& hit         = cast<0>(ray);
+    if (not hit)
+        return std::nullopt;
+    const auto pt     = hit->point();
+    const auto normal = hit->triangle.normal_at(pt);
+    auto bounce_dir   = vec3f{random_unit(gen), random_unit(gen), random_unit(gen)};
+    if ((normal | bounce_dir) < 0.0) // dot product
+        bounce_dir = -1.0 * bounce_dir;
+    const auto bounce = Ray{pt, bounce_dir};
+    if (auto bounce_hit = cast<N - 1>(bounce)) {
+        bounce_hit->color = (hit->material->diffuse + bounce_hit->material->diffuse) / 4;
+        return bounce_hit;
+    } else
+        return hit;
+}
+
+template <>
+std::optional<hit> Scene::cast<0>(const Ray& ray) const {
+    const auto find_intersection = make_y_combinator(
         [&ray](const auto& recurse, const Node& node) -> hit {
             auto h = hit{std::numeric_limits<double>::infinity(), ray};
             std::for_each(node.meshes.begin(), node.meshes.end(), [&](const Mesh& m) {
                 std::for_each(m.triangles.begin(), m.triangles.end(), [&](const auto& t) {
                     if (const auto i = ray.intersection(t)) {
                         const auto d = (*i - ray.origin).norm();
-                        if (d < h.distance) {
+                        if (epsilon < d and d < h.distance) {
                             h.distance = d;
                             h.material = m.material;
                             h.triangle = t;
@@ -64,19 +86,22 @@ std::optional<hit> Scene::cast(const Ray& ray) const {
             });
             std::for_each(node.children.begin(), node.children.end(), [&](const auto& n) {
                 hit hh = recurse(n);
-                if (hh.distance < h.distance)
+                if (epsilon < hh.distance and hh.distance < h.distance)
                     h = hh;
             });
             return h;
         });
-    const auto hit = find_intersection(root_node);
+    auto hit = find_intersection(root_node);
+    if (std::numeric_limits<double>::max() < hit.distance) // no hit
+        return std::nullopt;
+    hit.color = hit.material->diffuse;
     return hit;
 }
 
 Node Scene::load_node(const aiNode* ainode,
                       const aiScene* scene,
                       const std::vector<std::shared_ptr<Material>>& materials) {
-    auto node = Node{};
+    auto node = Node{ainode->mName.C_Str()};
     for (unsigned i = 0; i < ainode->mNumMeshes; ++i) {
         auto mesh         = Mesh{};
         const auto aimesh = scene->mMeshes[ainode->mMeshes[i]];
