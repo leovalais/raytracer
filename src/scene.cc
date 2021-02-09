@@ -91,15 +91,26 @@ Node Scene::load_node(const aiNode* ainode,
             const auto vec = vec3f{v.x, v.y, v.z};
             vertices.push_back(vec);
         }
+        auto normals = std::vector<vec3f>{};
+        if (aimesh->mNormals)
+            for (unsigned j = 0; j < aimesh->mNumVertices; j++) {
+                const auto& v = aimesh->mNormals[j];
+                normals.push_back({v.x, v.y, v.z});
+            }
+
         for (unsigned j = 0; j < aimesh->mNumFaces; ++j) {
             const auto& face    = aimesh->mFaces[j];
             auto vertex_indices = std::vector<unsigned>{};
+            assert(face.mNumIndices == 3); // aiProcess_Triangulate
             for (unsigned k = 0; k < face.mNumIndices; ++k)
                 vertex_indices.push_back(face.mIndices[k]);
-            assert(vertex_indices.size() == 3);
             auto t = triangle{vertices[vertex_indices[0]],
                               vertices[vertex_indices[1]],
                               vertices[vertex_indices[2]]};
+            if (normals.size() > 0)
+                t.normals = {normals[vertex_indices[0]],
+                             normals[vertex_indices[1]],
+                             normals[vertex_indices[2]]};
             mesh.triangles.push_back(t);
         }
         node.meshes.push_back(mesh);

@@ -18,6 +18,19 @@ void cli_help(char* argv0) {
               << std::endl;
 }
 
+/*
+    const auto print_normals = make_y_combinator([](auto rec, auto n) -> void {
+        std::for_each(n.meshes.begin(), n.meshes.end(), [](auto m) {
+            std::for_each(m.triangles.begin(), m.triangles.end(), [](auto t) {
+                auto [a, b, c] = t.normals;
+                std::cout << a << " " << b << " " << c << "\n";
+            });
+        });
+        std::for_each(n.children.begin(), n.children.end(), rec);
+    });
+    print_normals(root);
+*/
+
 int main(int argc, char** argv) {
     if (argc == 1 or argc > 3) {
         cli_help(argv[0]);
