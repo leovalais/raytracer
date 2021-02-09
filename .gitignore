@@ -41,3 +41,6 @@ debug/
 *.app
 
 .DS_Store
+*.mtl
+*.obj
+*.blend
