@@ -20,21 +20,21 @@ struct Color {
 
     template <typename OtherTrait>
     Color(Color<OtherTrait>& other)
-        : r{static_cast<typename Trait::type>(
-            Trait::max * static_cast<double>(other.r / OtherTrait::max))}
-        , g{static_cast<typename Trait::type>(
-              Trait::max * static_cast<double>(other.g / OtherTrait::max))}
-        , b{static_cast<typename Trait::type>(
-              Trait::max * static_cast<double>(other.b / OtherTrait::max))} { }
+        : r{static_cast<typename Trait::type>(Trait::max * static_cast<double>(other.r)
+                                              / OtherTrait::max)}
+        , g{static_cast<typename Trait::type>(Trait::max * static_cast<double>(other.g)
+                                              / OtherTrait::max)}
+        , b{static_cast<typename Trait::type>(Trait::max * static_cast<double>(other.b)
+                                              / OtherTrait::max)} { }
 
     template <typename OtherTrait>
     Color(const Color<OtherTrait>& other)
-        : r{static_cast<typename Trait::type>(
-            Trait::max * static_cast<double>(other.r / OtherTrait::max))}
-        , g{static_cast<typename Trait::type>(
-              Trait::max * static_cast<double>(other.g / OtherTrait::max))}
-        , b{static_cast<typename Trait::type>(
-              Trait::max * static_cast<double>(other.b / OtherTrait::max))} { }
+        : r{static_cast<typename Trait::type>(Trait::max * static_cast<double>(other.r)
+                                              / OtherTrait::max)}
+        , g{static_cast<typename Trait::type>(Trait::max * static_cast<double>(other.g)
+                                              / OtherTrait::max)}
+        , b{static_cast<typename Trait::type>(Trait::max * static_cast<double>(other.b)
+                                              / OtherTrait::max)} { }
 };
 
 template <typename T>
